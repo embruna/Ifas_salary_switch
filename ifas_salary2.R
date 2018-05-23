@@ -215,7 +215,7 @@ Sal.3.9 #salary at end of 3 years on 9 mo appt
 ######################################################################################
 ## NOW PROJECT 20 YEARS INTO THE FUTURE: STAY 12 MO
 ######################################################################################
-Base_Salary<-Sal.init.12
+Base_Salary<-Sal.1.12
 carry.forward<-0
 #carry.forward<-Invest.proj.1.12
 
@@ -408,7 +408,7 @@ plot.proj.invest
 ######################################################################################
 ## SAVE OUTPUT FILE
 ######################################################################################
-
+DATA
 write.csv(DATA, file = "Nine_Twelve_Projections_20yrs.csv")
 
 # wide_DATA <- DATA %>% spread(plan,salary)
