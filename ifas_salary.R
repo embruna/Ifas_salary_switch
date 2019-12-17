@@ -11,11 +11,11 @@ annual.raise=2 #percent annual raise, estimated
 ############################################
 # Adjustments if switching to 9 mo appt.
 ############################################
-salary.reduction=2 #percent decrease in 12 mo salary if accepting 9 mo appt
+salary.reduction=0 #percent decrease in 12 mo salary if accepting 9 mo appt
 
 raise.yr1.9mo=0 #percent raise in yr 1 if moving to 9 mo
 raise.yr2.9mo=0 #percent raise in yr 2 if moving to 9 mo
-raise.yr3.9mo=annual.raise #percent raise in yr 3 if moving to 9 mo. [originally had us going no-raise for 3 yrs]
+raise.yr3.9mo=0 #or annual.raise #percent raise in yr 3 if moving to 9 mo. [originally had us going no-raise for 3 yrs]
 
 # If you move to a 9 month appointment, you can try to get summer salary. 
 # Here you can modify how many months of salary you get from grants in yrs 1-3 after switching
@@ -40,7 +40,7 @@ Sal.3.9.with.summer=Sal.3.9+(Sal.2.9/9*salary.grant.months.yr3)
 ################################
 annual.rate=8 #annual percent interest rate of investments (estimate)
 years_to_project<-20  #for projections of future salary
-prob=0.20 #prob of having summer salary in years 4-24
+prob=0.25 #prob of having summer salary in years 4-24
 actual_summer_salary_funded<-1 #how many months of summer salary are you tryying to get each summer in the projections () 
 
 
