@@ -9,17 +9,24 @@ library(tidyverse)
 ############################################
 # 1) BASE SALARY
 ############################################
+sal.ifas <- 68700
+sal.las <- 69000
 
-Sal.init.12=134000 #initial salary
 
 ############################################
 # 2) Adjustments to BASE SALARY if switching to 9 mo appt.
 ############################################
 
-salary.reduction=0 #percent decrease in 12 mo salary if accepting 9 mo appt
-raise.yr1.9mo=0 #percent raise in yr 1 if moving to 9 mo
-raise.yr2.9mo=0 #percent raise in yr 2 if moving to 9 mo
-raise.yr3.9mo=0 #or annual.raise #percent raise in yr 3 if moving to 9 mo. [originally had us going no-raise for 3 yrs]
+salary.reduction <- 0 #percent decrease in 12 mo salary if accepting 9 mo appt
+raise.yr1.9mo.ifas <- 0 #percent raise in yr 1 if moving to 9 mo
+raise.yr2.9mo.ifas <- 0 #percent raise in yr 2 if moving to 9 mo
+raise.yr3.9mo.ifas <- 0 #or annual.raise #percent raise in yr 3 if moving to 9 mo. [originally had us going no-raise for 3 yrs]
+
+raise.yr1.9mo.las <- 0 #percent raise in yr 1 if moving to 9 mo
+raise.yr2.9mo.las <- 0 #percent raise in yr 2 if moving to 9 mo
+raise.yr3.9mo.las <- 0 #or annual.raise #percent raise in yr 3 if moving to 9 mo. [originally had us going no-raise for 3 yrs]
+
+
 
 ############################################
 # 3) ESTIMATED months of summer salary in Years 1-3 if switching to 9 month appt 
@@ -27,27 +34,27 @@ raise.yr3.9mo=0 #or annual.raise #percent raise in yr 3 if moving to 9 mo. [orig
 
 # If you move to a 9 month appointment, you can try to get summer salary. 
 # Here you can modify how many months of salary you get from grants in yrs 1-3 after switching
-salary.grant.months.yr1=0 #9 mo only
-salary.grant.months.yr2=0 #9 mo only
-salary.grant.months.yr3=0 #9 mo only
+salary.grant.months.yr1 <- 0 #9 mo only
+salary.grant.months.yr2 <- 0 #9 mo only
+salary.grant.months.yr3 <- 0 #9 mo only
 # 
-# salary.grant.months.yr1=1 #9 mo only
-# salary.grant.months.yr2=1 #9 mo only
-# salary.grant.months.yr3=1 #9 mo only
+# salary.grant.months.yr1 <- 1 #9 mo only
+# salary.grant.months.yr2 <- 1 #9 mo only
+# salary.grant.months.yr3 <- 1 #9 mo only
 
 
 ################################
 # 4) ESTIMATES FOR PROJECTIONS OF FUTURE SALARY, SUMMER SALARY, AND INVESTMENTS
 ################################
-annual.raise=1.5 #percent annual raise, estimated
+annual.raise <- 1.5 #percent annual raise, estimated
 
-annual.rate=8 #annual percent interest rate of investments, estimated
+annual.rate <- 8 #annual percent interest rate of investments, estimated
 
-years_to_project<-20  #for projections of future salary & investment; yr 1 = year 1 of salary switch plan
+years_to_project<-20  #for projections of future salary & investment; yr 1  <-  year 1 of salary switch plan
 
-actual_summer_salary_funded<-1.0 #how many months of summer salary are you tryying to get each summer in the projections () 
+actual_summer_salary_funded <- 1 #how many months of summer salary are you tryying to get each summer in the projections () 
 
-prob=0.25 #prob of actually having this number of months of summer salary in years 4-24
+prob <- 1.0 #prob of actually having this number of months of summer salary in years 4-24
 
 
 ############
@@ -68,14 +75,37 @@ prob=0.25 #prob of actually having this number of months of summer salary in yea
 ################################
 ################################
 
+# current base salary
+Sal.init.12 <- sal.las+sal.ifas #initial salary
+Sal.init.12
 
 ################################
-# Your new BASE SALARY if switching to 9 mo 
+# Your new BASE SALARY after yr 1 if switching to 9 mo 
+# Includes raise from LAS
 ################################
 
-Sal.1.9=Sal.init.12*(1-(salary.reduction)/100)
-Sal.2.9=Sal.1.9*(1+raise.yr2.9mo/100)
-Sal.3.9=Sal.2.9*(1+raise.yr3.9mo/100)
+Sal.1.9.las<-sal.las*(1+raise.yr1.9mo.las/100)
+
+Sal.1.9<-sal.ifas+Sal.1.9.las
+
+################################
+# Your new BASE SALARY after yr 2 if switching to 9 mo 
+# Includes raise from LAS
+################################
+
+# Sal.1.9 <- Sal.init.12*(1-(salary.reduction)/100)
+Sal.2.9.las<-Sal.1.9.las*(1+raise.yr2.9mo.las/100)
+Sal.2.9<-sal.ifas+Sal.2.9.las
+  
+
+################################
+# Your new BASE SALARY after yr 3 if switching to 9 mo 
+# Includes raise from LAS
+################################
+# Sal.2.9<-Sal.1.9+Sal.1.9*(1+raise.yr2.9mo/100)
+Sal.3.9.las<-Sal.2.9.las*(1+raise.yr3.9mo.las/100)
+Sal.3.9<-sal.ifas+Sal.3.9.las
+# Sal.3.9 <- Sal.2.9*(1+raise.yr3.9mo/100)
 
 
 ################################
@@ -86,10 +116,10 @@ Sal.3.9=Sal.2.9*(1+raise.yr3.9mo/100)
   # leave payout (year 1 only)
 
 ################################
-leave.payout=200*(Sal.init.12/2088) #200 hours; added only to year 1 if converting to 9 mo.
-Sal.1.9.with.summer=Sal.1.9+(Sal.1.9/9*salary.grant.months.yr1)+leave.payout # OR SHOULD YOU USE THE ORIGINAL 12 MONTH SALARY? 
-Sal.2.9.with.summer=Sal.2.9+(Sal.2.9/9*salary.grant.months.yr2) 
-Sal.3.9.with.summer=Sal.3.9+(Sal.3.9/9*salary.grant.months.yr3) 
+leave.payout <- 200*(Sal.init.12/2088) #200 hours; added only to year 1 if converting to 9 mo.
+Sal.1.9.with.summer <- Sal.1.9+(Sal.1.9/9*salary.grant.months.yr1)+leave.payout # OR SHOULD YOU USE THE ORIGINAL 12 MONTH SALARY? 
+Sal.2.9.with.summer <- Sal.2.9+(Sal.2.9/9*salary.grant.months.yr2) 
+Sal.3.9.with.summer <- Sal.3.9+(Sal.3.9/9*salary.grant.months.yr3) 
 
 
 
@@ -103,24 +133,29 @@ Sal.3.9.with.summer=Sal.3.9+(Sal.3.9/9*salary.grant.months.yr3)
 # # leave payout (year 1 only)
 # 
 # ################################
-# leave.payout=200*(Sal.init.12/2088) #200 hours; added only to year 1 if converting to 9 mo.
+# leave.payout <- 200*(Sal.init.12/2088) #200 hours; added only to year 1 if converting to 9 mo.
 
-IFAS_Sal.1.9<-Sal.1.9/2
-IFAS_Sal.2.9<-Sal.1.9/2
-IFAS_Sal.3.9<-Sal.1.9/2
+IFAS_Sal.1.9<-sal.ifas
+IFAS_Sal.2.9<-sal.ifas
+IFAS_Sal.3.9<-sal.ifas
 
-LAS_Sal.1.9<-(Sal.1.9/2)*(annual.raise/100+1)
-LAS_Sal.2.9<-Sal.1.9/2*(annual.raise/100+1)
-LAS_Sal.3.9<-Sal.2.9/2*(annual.raise/100+1)
+LAS_Sal.1.9<-(sal.las)*(annual.raise/100+1)
+LAS_Sal.2.9<-LAS_Sal.1.9*(annual.raise/100+1)
+LAS_Sal.3.9<-LAS_Sal.2.9*(annual.raise/100+1)
+
+
+# LAS_Sal.1.9<-(Sal.1.9/2)*(annual.raise/100+1)
+# LAS_Sal.2.9<-Sal.1.9/2*(annual.raise/100+1)
+# LAS_Sal.3.9<-Sal.2.9/2*(annual.raise/100+1)
 
 Sal.1.9.with.summer<-IFAS_Sal.1.9+LAS_Sal.1.9+(Sal.1.9/9*salary.grant.months.yr1)+leave.payout
 Sal.2.9.with.summer<-IFAS_Sal.2.9+LAS_Sal.2.9+(Sal.2.9/9*salary.grant.months.yr2) 
 Sal.3.9.with.summer<-IFAS_Sal.3.9+LAS_Sal.3.9+(Sal.3.9/9*salary.grant.months.yr3)
 
-# Sal.1.9.with.summer=Sal.1.9+(Sal.1.9/9*salary.grant.months.yr1)+leave.payout # OR SHOULD YOU USE THE ORIGINAL 12 MONTH SALARY? 
-# Sal.1.9.with.summer=(Sal.1.9/2)+(Sal.1.9/2*(1+annual.raise/100))+(Sal.1.9/9*salary.grant.months.yr1)
-# Sal.2.9.with.summer=Sal.2.9+(Sal.2.9/9*salary.grant.months.yr2) 
-# Sal.3.9.with.summer=Sal.3.9+(Sal.3.9/9*salary.grant.months.yr3) 
+# Sal.1.9.with.summer <- Sal.1.9+(Sal.1.9/9*salary.grant.months.yr1)+leave.payout # OR SHOULD YOU USE THE ORIGINAL 12 MONTH SALARY? 
+# Sal.1.9.with.summer <- (Sal.1.9/2)+(Sal.1.9/2*(1+annual.raise/100))+(Sal.1.9/9*salary.grant.months.yr1)
+# Sal.2.9.with.summer <- Sal.2.9+(Sal.2.9/9*salary.grant.months.yr2) 
+# Sal.3.9.with.summer <- Sal.3.9+(Sal.3.9/9*salary.grant.months.yr3) 
 
 annual.raise
 ######################################################################################
@@ -128,13 +163,13 @@ annual.raise
 ######################################################################################
 
 # DO NOT CHANGE THIS!
-rate=annual.rate/12 #we are compounfing monthly so divide annual rate by 12
-n=12 # no of months projecting we are doing this we are doing 3 annual projections to see amount after 36 months 
+rate <- annual.rate/12 #we are compounfing monthly so divide annual rate by 12
+n <- 12 # no of months projecting we are doing this we are doing 3 annual projections to see amount after 36 months 
 
 # Total investment at the end of 36 mos (principal + Interest): retain 12 month salary & raises
 # YEAR 1
-Sal.1.12=Sal.init.12*(1+annual.raise/100)
-P1.12=(Sal.1.12/12)*0.0514 #amount of monthly deposit = monthly salary * percent placed in investment account
+Sal.1.12 <- Sal.init.12*(1+annual.raise/100)
+P1.12 <- (Sal.1.12/12)*0.0514 #amount of monthly deposit  <-  monthly salary * percent placed in investment account
 
 # This code creates a vector, prin with the principle at the beginning of each period, 
 # and then a vector int containing the interest earned in that period. 
@@ -144,8 +179,8 @@ totalInt.1.12 <- sum(int1.12)
 Invest.proj.1.12<-totalInt.1.12+sum(prin1.12)
 
 # YEAR 2
-Sal.2.12=Sal.1.12*(1+annual.raise/100)
-P2.12=(Sal.2.12/12)*0.0514 #amount of monthly deposit = monthly salary * percent placed in investment account
+Sal.2.12 <- Sal.1.12*(1+annual.raise/100)
+P2.12 <- (Sal.2.12/12)*0.0514 #amount of monthly deposit  <-  monthly salary * percent placed in investment account
 
 prin2.12 <- (P2.12) * (1+rate/100)^(0:(n-1))
 int2.12  <- prin2.12 * rate/100
@@ -156,8 +191,8 @@ carry.forward.2.12<-carry.forward.2.12[12]
 Invest.proj.2.12<-sum(prin2.12)+totalInt.2.12+carry.forward.2.12
 
 # YEAR 3
-Sal.3.12=Sal.2.12*(1+annual.raise/100)
-P3.12=(Sal.2.12/12)*0.0514 #amount of monthly deposit = monthly salary * percent placed in investment account
+Sal.3.12 <- Sal.2.12*(1+annual.raise/100)
+P3.12 <- (Sal.2.12/12)*0.0514 #amount of monthly deposit  <-  monthly salary * percent placed in investment account
 
 prin3.12 <- (P3.12) * (1+rate/100)^(0:(n-1))
 int3.12  <- prin3.12 * rate/100
@@ -175,9 +210,9 @@ Invest.proj.3.12<-sum(prin3.12)+totalInt.3.12+carry.forward.3.12
 # Total investment at the end of 36 mos (principal + Interest): 9 month salary with raises
 
 # YEAR 1
-#amount of monthly deposit = monthly salary * percent placed in investment account
-P1.9=(Sal.1.9/12)*0.0514 
-# P1.9=(Sal.1.9/26.1)*0.0514 # 26.1 pay periods 
+#amount of monthly deposit  <-  monthly salary * percent placed in investment account
+P1.9 <- (Sal.1.9/12)*0.0514 
+# P1.9 <- (Sal.1.9/26.1)*0.0514 # 26.1 pay periods 
 
 # This code creates a vector, prin with the principle at the beginning of each period, 
 # and then a vector int containing the interest earned in that period. 
@@ -189,9 +224,9 @@ Invest.proj.1.9<-sum(prin1.9)+totalInt.1.9
 Invest.proj.1.9
 
 # YEAR 2
-#amount of monthly deposit = monthly salary * percent placed in investment account
-P2.9=(Sal.2.9/12)*0.0514 
-# P2.9=(Sal.2.9/26.1)*0.0514 
+#amount of monthly deposit  <-  monthly salary * percent placed in investment account
+P2.9 <- (Sal.2.9/12)*0.0514 
+# P2.9 <- (Sal.2.9/26.1)*0.0514 
 # This code creates a vector, prin with the principle at the beginning of each period, 
 # and then a vector int containing the interest earned in that period. 
 prin2.9 <- (P2.9) * (1+rate/100)^(0:(n-1))
@@ -204,9 +239,9 @@ Invest.proj.2.9<-sum(prin2.9)+totalInt.2.9+carry.forward.2.9
 Invest.proj.2.9
 
 # YEAR 3
-#amount of monthly deposit = monthly salary * percent placed in investment account
-P3.9=(Sal.3.9/12)*0.0514 
-# P3.9=(Sal.3.9/26.1)*0.0514 
+#amount of monthly deposit  <-  monthly salary * percent placed in investment account
+P3.9 <- (Sal.3.9/12)*0.0514 
+# P3.9 <- (Sal.3.9/26.1)*0.0514 
 # This code creates a vector, prin with the principle at the beginning of each period, 
 # and then a vector int containing the interest earned in that period. 
 prin3.9 <- (P3.9) * (1+rate/100)^(0:(n-1))
@@ -276,7 +311,7 @@ investment_return <- function(x,y,z) {
     actual_summer_salary_funded<-0 #You can calibrate how much you get (i.e., ask for 50% of salary or 100% of salary, etc.)
     total_salary<-Base_Salary+(summer_salary*actual_summer_salary_funded)
     data$total_salary[i]<-total_salary
-    Projections=((total_salary)/12)*0.0514 #amount of monthly deposit = monthly salary * percent placed in investment account
+    Projections <- ((total_salary)/12)*0.0514 #amount of monthly deposit = monthly salary * percent placed in investment account
     prin.proj <- Projections*(1+rate/100)^(0:(n-1))
     
     carry.forward<-carry.forward*(1+rate/100)^(0:(n-1))
@@ -350,7 +385,7 @@ investment_return <- function(x,y,z) {
     
      total_salary<-Base_Salary+(summer_salary*actual_summer_salary_funded)
     data$total_salary[i]<-total_salary
-    Projections=((total_salary)/12)*0.0514 #amount of monthly deposit = monthly salary * percent placed in investment account
+    Projections <- ((total_salary)/12)*0.0514 #amount of monthly deposit = monthly salary * percent placed in investment account
     prin.proj <- Projections*(1+rate/100)^(0:(n-1))
   
     carry.forward<-carry.forward*(1+rate/100)^(0:(n-1))
@@ -462,7 +497,7 @@ sal.diff.cum<-DATA$TotalSalary_cumulative[years_to_project]-projections.9mos$Tot
 sal.diff.cum # negative numbers = lower cumulative salary over 20 years if staying on 12 month
 
 # stay 12: DIFF IN CUMULATIVE INVEST  
-inv.diff.cum<-projections.12mos$InvestmentReturn_cumulative[years_to_project]-projections.9mos$InvestmentReturn_cumulative[years_to_project]
+inv.diff.cum<-projections.12mos$InvestmentReturn[years_to_project]-projections.9mos$InvestmentReturn[years_to_project]
 
 # Net if stay 12
 net.diff.cum<-sal.diff.cum+inv.diff.cum
